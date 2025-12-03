@@ -1,0 +1,9 @@
+NUMBER=1
+FUNCTION=2
+OPEN_BRACKET=3
+CLOSE_BRACKET=4
+SEMICOLEN=5
+'function'=2
+'('=3
+')'=4
+';'=5
