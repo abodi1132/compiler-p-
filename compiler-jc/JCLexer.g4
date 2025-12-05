@@ -28,29 +28,37 @@ mode ATTR_MODE;
      SRT1: '/>' -> popMode, popMode;
 
 
-
-
-
-
 mode CLOSE_TAG_MODE;
     CLOSE_TAG_N: [a-zA-Z][a-zA-Z0-9]*;
     CLOSE_RT: '>' -> popMode;
     CLOSE_WS: [ \t\r\n]+ -> skip;
 
+
 mode CSS_MODE;
     STYLE_CL: '</style>' -> popMode;
+    L_BRACE1: '{' -> pushMode(BLK_MODE);
+    R_BRACE1: '}';
+    COMMA1: ',';
     CSS_UNIVERSAL: '*';
     CSS_CLASS: '.' [a-zA-Z_\-][a-zA-Z0-9_\-]*;
     CSS_ID: '#' [a-zA-Z_\-][a-zA-Z0-9_\-]*;
-    TAG_N1: [a-zA-Z][a-zA-Z0-9]*;
-    L_BRACE1: '{';
-    COLON1: ':';
-    CSS_PROP: [a-zA-Z\-]+;
-    CSS_VAL: (~[;{}\r\n])+;
-    SEMICOLON1: ';';
-    R_BRACE1: '}';
+    TAG_NAME: [a-zA-Z][a-zA-Z0-9_\-]*;
     CSS_COMMENT: '/*' .*? '*/' -> skip;
     WS2: [ \t\r\n]+ -> skip;
+
+
+mode BLK_MODE;
+     R_BRACE3: '}'-> popMode;
+     CSS_PROP: [a-zA-Z_\-][a-zA-Z0-9_\-]* -> pushMode(VAL_MODE);
+     CSS_COMMENT2: '/*' .*? '*/' -> skip;
+     WS_BLOCK: [ \t\r\n]+ -> skip;
+
+mode VAL_MODE;
+     SEMICOLON1: ';' -> popMode;
+     COLON1: ':';
+     CSS_VAL: (~[;:{}\r\n\t])+;
+     R_BRACE2: '}'-> popMode,popMode;
+     WS3: [ \t\r\n]+ -> skip;
 
 mode JINJA_MODE;
      DOUBLE_RBRC: '}}'  -> popMode;

@@ -34,17 +34,17 @@ attributes
 
 cssblock: STYLE_OP csscontent STYLE_CL;
 csscontent: (cssrules|csscomment|WS2)+;
-cssrules: selector L_BRACE1 (cssdeclaration | csscomment | WS2)* R_BRACE1;
+cssrules: selector L_BRACE1 (cssdeclaration | csscomment | WS2)* R_BRACE3;
 selector
         : CSS_UNIVERSAL
         | CSS_CLASS
         | CSS_ID
-        | TAG_N1
-        | selector COMMA selector
-        | selector selector
+        |TAG_NAME
         ;
 
-cssdeclaration: CSS_PROP COLON1 CSS_VAL SEMICOLON1 ?;
+
+cssdeclaration: CSS_PROP COLON1 CSS_VAL SEMICOLON1;
+
 
 csscomment: CSS_COMMENT;
 
