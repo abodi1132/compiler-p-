@@ -1,102 +1,109 @@
 lexer grammar JCLexer;
 
-STYLE_CL: '</style>';
-STYLE_OP: '<style>';
-SLT: '</';
-SRT: '/>';
+DOUBLE_LBRC: '{{'-> pushMode(JINJA_MODE);
+LBRC_PERCENT: '{%' -> pushMode(JINJA_MODE);
+LBRC_HASH: '{#' -> pushMode(JINJA_C_MODE);
 
-DOUBLE_LBRC: '{{';
-DOUBLE_RBRC: '}}';
-LBRC_PERCENT: '{%';
-RBRC_PERCENT: '%}';
-LBRC_HASH: '{#';
-RBRC_HASH: '#}';
+STYLE_OP: '<style>' -> pushMode(CSS_MODE);
 
-OP_L: '<';
-OP_R: '>';
-LE_E: '<=';
-GE_E: '>=';
+SLT: '</' -> pushMode(CLOSE_TAG_MODE);
 
-LT: '<' -> pushMode(TAG_MODE);
-RT: '>';
-
-CSS_CLASS: '.' [a-zA-Z_\-][a-zA-Z0-9_\-]*;
-CSS_ID: '#' [a-zA-Z_\-][a-zA-Z0-9_\-]*;
+TAG_START: '<' -> pushMode(OPEN_TAG_MODE);
 
 
-L_BRACE: '{';
-R_BRACE: '}';
-COLON: ':';
-SEMICOLON: ';';
-COMMA: ',';
-
-CSS_PROP: [a-zA-Z\-]+;
-CSS_VAL: ~[;{}]+;
-
-TAG_N: [a-zA-Z][a-zA-Z0-9]*;
-CSS_UNIVERSAL: '*';
-
-ATTR_N:[a-zA-Z_\-][a-zA-Z0-9_\-]*;
-ATTR_V:'"' ~["]*'"' | '\'' ~[']* '\'' ;
-
-J_FOR: 'for';
-J_IN: 'in';
-J_IF: 'if';
-J_ELSE: 'else';
-J_ELIF: 'elif';
-J_ENDIF: 'endif';
-J_ENDFOR: 'endfor';
-J_BLOCK: 'block';
-J_ENDBLOCK: 'endblock';
-J_EXTENDS: 'extends';
-J_INCLUDE: 'include';
-J_SET: 'set';
-J_MACRO: 'macro';
-J_ENDMACRO: 'endmacro';
-
-LPAREN: '(';
-RPAREN: ')';
-LBRACK: '[';
-RBRACK: ']';
-
-ASSIGN: '=';
-EQ: '==';
-NE: '!=';
-
-
-PLUS: '+';
-MINUS: '-';
-MULTI: '*';
-DIVIDE: '/';
-PERCENT: '%';
-
-AND: 'and';
-OR: 'or';
-NOT: 'not';
-
-STRING: '"' (~["\\] | '\\' .)* '"'
-      | '\'' (~['\\] | '\\' .)* '\'';
-NUMBER: [0-9]+ ('.' [0-9]+)?;
-TRUE: 'true' | 'True';
-FALSE: 'false' | 'False';
-NIL: 'none' | 'None' | 'null';
-ID: [a-zA-Z_][a-zA-Z0-9_]*;
-
-HTML_TEXT: ~[<{]+;
+HTML_TEXT: (~[<{])+;
 
 WS: [ \t\r\n]+ -> skip;
 
-mode TAG_MODE;
+mode OPEN_TAG_MODE;
+    TAG_N: [a-zA-Z][a-zA-Z0-9]* -> pushMode(ATTR_MODE);
+    WS1: [ \t\r\n]+ -> skip;
+
+mode ATTR_MODE;
+     ATTR_N1: [a-zA-Z_][a-zA-Z0-9_\-]*;
+     ASSIGN1: '=';
+     ATTR_V1: '"' (~["\r\n])* '"' | '\'' (~['\r\n])* '\'';
+     ATTR_WS: [ \t\r\n]+ -> skip;
+     RT1: '>' -> popMode, popMode;
+     SRT1: '/>' -> popMode, popMode;
+
+
+
+
+
+
+mode CLOSE_TAG_MODE;
+    CLOSE_TAG_N: [a-zA-Z][a-zA-Z0-9]*;
+    CLOSE_RT: '>' -> popMode;
+    CLOSE_WS: [ \t\r\n]+ -> skip;
+
+mode CSS_MODE;
+    STYLE_CL: '</style>' -> popMode;
+    CSS_UNIVERSAL: '*';
+    CSS_CLASS: '.' [a-zA-Z_\-][a-zA-Z0-9_\-]*;
+    CSS_ID: '#' [a-zA-Z_\-][a-zA-Z0-9_\-]*;
     TAG_N1: [a-zA-Z][a-zA-Z0-9]*;
-    RT1: '>' -> popMode;
-    SRT1: '/>' -> popMode;
-    ATTR_N1: [a-zA-Z_][a-zA-Z0-9_\-]*;
-    ASSIGN1: '=';
-    ATTR_V1: '"' ~["]* '"' | '\'' ~[']* '\'';
+    L_BRACE1: '{';
+    COLON1: ':';
+    CSS_PROP: [a-zA-Z\-]+;
+    CSS_VAL: (~[;{}\r\n])+;
+    SEMICOLON1: ';';
+    R_BRACE1: '}';
+    CSS_COMMENT: '/*' .*? '*/' -> skip;
+    WS2: [ \t\r\n]+ -> skip;
+
+mode JINJA_MODE;
+     DOUBLE_RBRC: '}}'  -> popMode;
+     RBRC_PERCENT: '%}'  -> popMode;
+     J_FOR: 'for';
+     J_IN: 'in';
+     J_IF: 'if';
+     J_ELSE: 'else';
+     J_ELIF: 'elif';
+     J_ENDIF: 'endif';
+     J_ENDFOR: 'endfor';
+     J_BLOCK: 'block';
+     J_ENDBLOCK: 'endblock';
+     J_EXTENDS: 'extends';
+     J_INCLUDE: 'include';
+     J_SET: 'set';
+     J_MACRO: 'macro';
+     J_ENDMACRO: 'endmacro';
+     STRING: '"' (~["\\] | '\\' .)* '"'
+           | '\'' (~['\\] | '\\' .)* '\'';
+     NUMBER: [0-9]+ ('.' [0-9]+)?;
+     TRUE: 'true' | 'True';
+     FALSE: 'false' | 'False';
+     NIL: 'none' | 'None' | 'null';
+     ID: [a-zA-Z_][a-zA-Z0-9_]*;
+     AND: 'and';
+     OR: 'or';
+     NOT: 'not';
+     LE_E: '<=';
+     GE_E: '>=';
+     EQ: '==';
+     NE: '!=';
+     LT: '<';
+     RT: '>';
+     ASSIGN: '=';
+     PLUS: '+';
+     MINUS: '-';
+     MULTI: '*';
+     DIVIDE: '/';
+     PERCENT: '%';
+     DOT : '.';
+     LPAREN: '(';
+     RPAREN: ')';
+     LBRACK: '[';
+     RBRACK: ']';
+     COMMA: ',';
+     WS_JINJA: [ \t\r\n]+ -> skip;
 
 
 
-
+mode JINJA_C_MODE;
+     RBRC_HASH: '#}' -> popMode;
+     COMMENT_TEXT: . -> skip;
 
 
 
