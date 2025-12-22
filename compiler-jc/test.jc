@@ -1,0 +1,12 @@
+<html lang="en">
+  <head>
+    <style>
+      body { color: red; font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    {% if user %}
+      <p>Hello {{ user }}</p>
+    {% endif %}
+  </body>
+</html>
