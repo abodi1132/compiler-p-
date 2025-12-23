@@ -10,7 +10,8 @@ SLT: '</' -> pushMode(CLOSE_TAG_MODE);
 
 TAG_START: '<' -> pushMode(OPEN_TAG_MODE);
 
-
+HTML_COMMENT    : '<!--' .*? '-->' ;
+DOCTYPE         : '<!DOCTYPE' .*? '>' ;
 HTML_TEXT: (~[<{])+;
 
 WS: [ \t\r\n]+ -> skip;
@@ -112,7 +113,3 @@ mode JINJA_MODE;
 mode JINJA_C_MODE;
      RBRC_HASH: '#}' -> popMode;
      COMMENT_TEXT: . -> skip;
-
-
-
-

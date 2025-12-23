@@ -7,14 +7,10 @@ element
     : htmlelements
     | cssblock
     | jinjaexpression
+    | jinjastatement
     | jinjacomment
-    | ifstatement
-    | forstatement
-    | blockstatement
-    | macrostatement
-    | setstatement
-    | extendsstatement
-    | includestatement
+    | HTML_COMMENT
+    | DOCTYPE
     | HTML_TEXT+
     ;
 
@@ -22,7 +18,7 @@ element
 
 
 htmlelements
-    : TAG_START TAG_N  attributes* RT1 element* SLT CLOSE_TAG_N CLOSE_RT
+    : TAG_START TAG_N  attributes* RT1  element* SLT CLOSE_TAG_N CLOSE_RT
     | TAG_START TAG_N attributes* SRT1
     | TAG_START TAG_N attributes* RT1
     ;
