@@ -1,4 +1,5 @@
-// Generated from C:/compiler/compiler-p-/compiler-jc/JCLexer.g4 by ANTLR 4.13.2
+// Generated from C:/Users/karam 2/Documents/compiler-p-/compiler-jc/JCLexer.g4 by ANTLR 4.13.2
+package gen;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

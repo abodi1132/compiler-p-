@@ -23,26 +23,60 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
 
     @Override
     public Node visitElement(JCParser.ElementContext ctx) {
-        if (ctx.htmlelements() != null) return visit(ctx.htmlelements());
-        if (ctx.cssblock() != null) return visit(ctx.cssblock());
-        if (ctx.jinjaexpression() != null) return visit(ctx.jinjaexpression());
-        if (ctx.ifstatement() != null) return visit(ctx.ifstatement());
-        if (ctx.forstatement() != null) return visit(ctx.forstatement());
-        if (ctx.blockstatement() != null) return visit(ctx.blockstatement());
-        if (ctx.macrostatement() != null) return visit(ctx.macrostatement());
-        if (ctx.setstatement() != null) return visit(ctx.setstatement());
-        if (ctx.extendsstatement() != null) return visit(ctx.extendsstatement());
-        if (ctx.includestatement() != null) return visit(ctx.includestatement());
-        if (ctx.HTML_TEXT() != null) {
-            String txt = ctx.getText();
-            if (txt.trim().isEmpty()) {
-                return null; // ignore pure whitespace
-            }
-            return new HtmlText(txt);
+
+        if (ctx.jinjastatement() != null) {
+            return visit(ctx.jinjastatement());
+        }
+
+        if (ctx.htmlelements() != null) {
+            return visit(ctx.htmlelements());
+        }
+
+        if (ctx.cssblock() != null) {
+            return visit(ctx.cssblock());
+        }
+
+        if (ctx.jinjaexpression() != null) {
+            return visit(ctx.jinjaexpression());
         }
 
         return null;
     }
+
+    @Override
+    public Node visitJinjastatement(JCParser.JinjastatementContext ctx) {
+        return visit(ctx.statement());
+    }
+
+
+    @Override
+    public Node visitStatement(JCParser.StatementContext ctx) {
+
+        if (ctx.ifstatement() != null) {
+            return visit(ctx.ifstatement());
+        }
+        if (ctx.forstatement() != null) {
+            return visit(ctx.forstatement());
+        }
+        if (ctx.blockstatement() != null) {
+            return visit(ctx.blockstatement());
+        }
+        if (ctx.macrostatement() != null) {
+            return visit(ctx.macrostatement());
+        }
+        if (ctx.setstatement() != null) {
+            return visit(ctx.setstatement());
+        }
+        if (ctx.extendsstatement() != null) {
+            return visit(ctx.extendsstatement());
+        }
+        if (ctx.includestatement() != null) {
+            return visit(ctx.includestatement());
+        }
+
+        return null;
+    }
+
 
     @Override
     public Node visitHtmlelements(JCParser.HtmlelementsContext ctx) {
