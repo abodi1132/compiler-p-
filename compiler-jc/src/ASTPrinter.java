@@ -39,7 +39,7 @@ public class ASTPrinter {
 
     private void printHtml(HtmlElement h) {
         write("HtmlElement {"); nl(); indent++;
-        ind(); write("tag { " + h.tagName + " }"); nl();
+        ind(); write("<start-tag " + h.tagName + ">"); nl();
         if (!h.attributes.isEmpty()) {
             ind(); write("attrs ["); nl(); indent++;
             for (Attribute a : h.attributes) { ind(); write(a.toString()); nl(); }
@@ -50,11 +50,13 @@ public class ASTPrinter {
             for (Node c : h.children) { ind(); printNode(c); nl(); }
             indent--; ind(); write("]"); nl();
         }
+        ind(); write("</end-tag " + h.tagName + ">"); nl();
         indent--; ind(); write("}");
     }
 
     private void printCss(CssBlock c) {
-        write("CssBlock {"); nl(); indent++;
+        write("CssBlock <style> {");
+        nl(); indent++;
         ind(); write("rules ["); nl(); indent++;
         for (CssRule r : c.rules) {
             ind(); write("CssRule { selector = " + r.selector); nl(); indent++;
@@ -64,6 +66,8 @@ public class ASTPrinter {
             indent--; ind(); write("}"); nl();
         }
         indent--; ind(); write("]"); nl();
+
+        ind(); write("</style>"); nl();
         indent--; ind(); write("}");
     }
 
