@@ -16,6 +16,15 @@ HTML_TEXT: (~[<{])+;
 
 WS: [ \t\r\n]+ -> skip;
 
+VOID_TAG
+    : 'img'
+    | 'input'
+    | 'br'
+    | 'meta'
+    | 'link'
+    ;
+
+
 mode OPEN_TAG_MODE;
     TAG_N: [a-zA-Z][a-zA-Z0-9]* -> pushMode(ATTR_MODE);
     WS1: [ \t\r\n]+ -> skip;
@@ -43,6 +52,7 @@ mode CSS_MODE;
     CSS_UNIVERSAL: '*';
     CSS_CLASS: '.' [a-zA-Z_\-][a-zA-Z0-9_\-]*;
     CSS_ID: '#' [a-zA-Z_\-][a-zA-Z0-9_\-]*;
+    CSS_PSEUDO: ':' ':'? [a-zA-Z_\-][a-zA-Z0-9_\-]*;
     TAG_NAME: [a-zA-Z][a-zA-Z0-9_\-]*;
     CSS_COMMENT: '/*' .*? '*/' -> skip;
     WS2: [ \t\r\n]+ -> skip;
@@ -99,6 +109,7 @@ mode JINJA_MODE;
      MINUS: '-';
      MULTI: '*';
      DIVIDE: '/';
+     PIPE: '|';
      PERCENT: '%';
      DOT : '.';
      LPAREN: '(';

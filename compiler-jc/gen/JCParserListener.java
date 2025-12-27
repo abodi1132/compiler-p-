@@ -48,6 +48,16 @@ public interface JCParserListener extends ParseTreeListener {
 	 */
 	void exitAttributes(JCParser.AttributesContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link JCParser#voidElement}.
+	 * @param ctx the parse tree
+	 */
+	void enterVoidElement(JCParser.VoidElementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JCParser#voidElement}.
+	 * @param ctx the parse tree
+	 */
+	void exitVoidElement(JCParser.VoidElementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link JCParser#cssblock}.
 	 * @param ctx the parse tree
 	 */
@@ -138,15 +148,161 @@ public interface JCParserListener extends ParseTreeListener {
 	 */
 	void exitJinjacomment(JCParser.JinjacommentContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JCParser#expression}.
+	 * Enter a parse tree produced by the {@code AndExpr}
+	 * labeled alternative in {@link JCParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpression(JCParser.ExpressionContext ctx);
+	void enterAndExpr(JCParser.AndExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link JCParser#expression}.
+	 * Exit a parse tree produced by the {@code AndExpr}
+	 * labeled alternative in {@link JCParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpression(JCParser.ExpressionContext ctx);
+	void exitAndExpr(JCParser.AndExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ComparisonExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterComparisonExpr(JCParser.ComparisonExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ComparisonExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitComparisonExpr(JCParser.ComparisonExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code UnaryExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnaryExpr(JCParser.UnaryExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code UnaryExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnaryExpr(JCParser.UnaryExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code OrExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterOrExpr(JCParser.OrExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code OrExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitOrExpr(JCParser.OrExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IndexExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterIndexExpr(JCParser.IndexExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IndexExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitIndexExpr(JCParser.IndexExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code MulDivExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterMulDivExpr(JCParser.MulDivExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code MulDivExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitMulDivExpr(JCParser.MulDivExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FilterExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterFilterExpr(JCParser.FilterExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FilterExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitFilterExpr(JCParser.FilterExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code CallExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterCallExpr(JCParser.CallExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code CallExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitCallExpr(JCParser.CallExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code PrimaryExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrimaryExpr(JCParser.PrimaryExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code PrimaryExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrimaryExpr(JCParser.PrimaryExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code NotExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterNotExpr(JCParser.NotExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code NotExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitNotExpr(JCParser.NotExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ParenExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterParenExpr(JCParser.ParenExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ParenExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitParenExpr(JCParser.ParenExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code MemberAccessExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterMemberAccessExpr(JCParser.MemberAccessExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code MemberAccessExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitMemberAccessExpr(JCParser.MemberAccessExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code AddSubExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterAddSubExpr(JCParser.AddSubExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code AddSubExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitAddSubExpr(JCParser.AddSubExprContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link JCParser#primary}.
 	 * @param ctx the parse tree

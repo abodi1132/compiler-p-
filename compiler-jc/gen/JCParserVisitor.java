@@ -35,6 +35,12 @@ public interface JCParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAttributes(JCParser.AttributesContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JCParser#voidElement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVoidElement(JCParser.VoidElementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JCParser#cssblock}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -89,11 +95,96 @@ public interface JCParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitJinjacomment(JCParser.JinjacommentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCParser#expression}.
+	 * Visit a parse tree produced by the {@code AndExpr}
+	 * labeled alternative in {@link JCParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitExpression(JCParser.ExpressionContext ctx);
+	T visitAndExpr(JCParser.AndExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ComparisonExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComparisonExpr(JCParser.ComparisonExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code UnaryExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnaryExpr(JCParser.UnaryExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code OrExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOrExpr(JCParser.OrExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code IndexExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIndexExpr(JCParser.IndexExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code MulDivExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMulDivExpr(JCParser.MulDivExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code FilterExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFilterExpr(JCParser.FilterExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code CallExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallExpr(JCParser.CallExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code PrimaryExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrimaryExpr(JCParser.PrimaryExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code NotExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNotExpr(JCParser.NotExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ParenExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParenExpr(JCParser.ParenExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code MemberAccessExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMemberAccessExpr(JCParser.MemberAccessExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code AddSubExpr}
+	 * labeled alternative in {@link JCParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAddSubExpr(JCParser.AddSubExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link JCParser#primary}.
 	 * @param ctx the parse tree
