@@ -20,7 +20,6 @@ element
 htmlelements
     : TAG_START TAG_N  attributes* RT1  element* SLT CLOSE_TAG_N CLOSE_RT
     | TAG_START TAG_N attributes* SRT1
-    | TAG_START TAG_N attributes* RT1
     ;
 
 attributes

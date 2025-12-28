@@ -3,19 +3,18 @@ import gen.*;
 import org.antlr.v4.runtime.tree.*;
 import java.util.*;
 
-/**
- * Visitor that builds the semantic AST (Program node).
- * - Expression nodes are constructed conservatively:
- *   literals/identifiers map to concrete Expr subclasses;
- *   complex expressions fall back to RawExpr(ctx.getText()).
- */
 public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
+
+    private static final Set<String> VOID_TAGS = Set.of(
+            "br", "img", "input","link", "hr"
+    );
 
     @Override
     public Node visitDocument(JCParser.DocumentContext ctx) {
         Program prog = new Program();
         for (JCParser.ElementContext ectx : ctx.element()) {
             Node n = visit(ectx);
+
             if (n != null) prog.children.add(n);
         }
         return prog;
@@ -23,87 +22,80 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
 
     @Override
     public Node visitElement(JCParser.ElementContext ctx) {
+        if (ctx.jinjastatement() != null) return visit(ctx.jinjastatement());
+        if (ctx.htmlelements() != null) return visit(ctx.htmlelements());
+        if (ctx.cssblock() != null) return visit(ctx.cssblock());
+        if (ctx.jinjaexpression() != null) return visit(ctx.jinjaexpression());
 
-        if (ctx.jinjastatement() != null) {
-            return visit(ctx.jinjastatement());
-        }
-
-        if (ctx.htmlelements() != null) {
-            return visit(ctx.htmlelements());
-        }
-
-        if (ctx.cssblock() != null) {
-            return visit(ctx.cssblock());
-        }
-
-        if (ctx.jinjaexpression() != null) {
-            return visit(ctx.jinjaexpression());
+        if (!ctx.HTML_TEXT().isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (TerminalNode t : ctx.HTML_TEXT()) {
+                sb.append(t.getText());
+            }
+            String text = sb.toString();
+            if (!text.trim().isEmpty()) {
+                return new HtmlText(text);
+            }
         }
 
         return null;
     }
 
     @Override
-    public Node visitJinjastatement(JCParser.JinjastatementContext ctx) {
-        return visit(ctx.statement());
-    }
+    public Node visitCssblock(JCParser.CssblockContext ctx) {
+        CssBlock block = new CssBlock();
+        JCParser.CsscontentContext contentCtx = ctx.csscontent();
 
+        if (contentCtx != null) {
+            for (ParseTree child : contentCtx.children) {
+                if (child instanceof JCParser.CssrulesContext) {
+                    CssRule rule = (CssRule) visit(child);
+                    if (rule != null) {
+                        block.rules.add(rule);
+                    }
+                }
+            }
+        }
+        return block;
+    }
 
     @Override
-    public Node visitStatement(JCParser.StatementContext ctx) {
-
-        if (ctx.ifstatement() != null) {
-            return visit(ctx.ifstatement());
-        }
-        if (ctx.forstatement() != null) {
-            return visit(ctx.forstatement());
-        }
-        if (ctx.blockstatement() != null) {
-            return visit(ctx.blockstatement());
-        }
-        if (ctx.macrostatement() != null) {
-            return visit(ctx.macrostatement());
-        }
-        if (ctx.setstatement() != null) {
-            return visit(ctx.setstatement());
-        }
-        if (ctx.extendsstatement() != null) {
-            return visit(ctx.extendsstatement());
-        }
-        if (ctx.includestatement() != null) {
-            return visit(ctx.includestatement());
+    public Node visitCssrules(JCParser.CssrulesContext ctx) {
+        CssRule r = new CssRule();
+        if (ctx.selector() != null) {
+            r.selector = ctx.selector().getText();
         }
 
-        return null;
+        for (ParseTree ch : ctx.children) {
+            if (ch instanceof JCParser.CssdeclarationContext) {
+                CssDecl d = (CssDecl) visit(ch);
+                if (d != null) r.declarations.add(d);
+            }
+        }
+        return r;
     }
-
 
     @Override
     public Node visitHtmlelements(JCParser.HtmlelementsContext ctx) {
-        if (ctx.TAG_N() == null) {
-            return null;
-        }
+        if (ctx.TAG_N() == null) return null;
+
 
         HtmlElement el = new HtmlElement();
-
-        if (ctx.TAG_N() != null) {
-            el.tagName = ctx.TAG_N().getText();
-        } else if (ctx.CLOSE_TAG_N() != null) {
-            el.tagName = ctx.CLOSE_TAG_N().getText();
-        } else {
-            el.tagName = "<unknown>";
-        }
+        el.tagName = ctx.TAG_N().getText();
 
         if (ctx.SRT1() != null) el.selfClosing = true;
+        if (VOID_TAGS.contains(el.tagName.toLowerCase())) el.selfClosing = true;
 
         for (JCParser.AttributesContext a : ctx.attributes()) {
             Attribute attr = (Attribute) visit(a);
             if (attr != null) el.attributes.add(attr);
         }
 
-        for (JCParser.ElementContext c : ctx.element()) {
-            Node child = visit(c);
-            if (child != null) el.children.add(child);
+        if (!el.selfClosing) {
+            for (JCParser.ElementContext c : ctx.element()) {
+                Node child = visit(c);
+                if (child != null) el.children.add(child);
+            }
         }
 
         return el;
@@ -118,31 +110,6 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
     }
 
     @Override
-    public Node visitCssblock(JCParser.CssblockContext ctx) {
-        CssBlock block = new CssBlock();
-        for (ParseTree ch : ctx.csscontent().children) {
-            if (ch instanceof JCParser.CssrulesContext) {
-                CssRule rule = (CssRule) visit(ch);
-                if (rule != null) block.rules.add(rule);
-            }
-        }
-        return block;
-    }
-
-    @Override
-    public Node visitCssrules(JCParser.CssrulesContext ctx) {
-        CssRule r = new CssRule();
-        r.selector = ctx.selector().getText();
-        for (ParseTree ch : ctx.children) {
-            if (ch instanceof JCParser.CssdeclarationContext) {
-                CssDecl d = (CssDecl) visit(ch);
-                if (d != null) r.declarations.add(d);
-            }
-        }
-        return r;
-    }
-
-    @Override
     public Node visitCssdeclaration(JCParser.CssdeclarationContext ctx) {
         CssDecl d = new CssDecl();
         d.property = ctx.CSS_PROP().getText();
@@ -150,7 +117,22 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
         return d;
     }
 
+    @Override
+    public Node visitJinjastatement(JCParser.JinjastatementContext ctx) {
+        return visit(ctx.statement());
+    }
 
+    @Override
+    public Node visitStatement(JCParser.StatementContext ctx) {
+        if (ctx.ifstatement() != null) return visit(ctx.ifstatement());
+        if (ctx.forstatement() != null) return visit(ctx.forstatement());
+        if (ctx.blockstatement() != null) return visit(ctx.blockstatement());
+        if (ctx.macrostatement() != null) return visit(ctx.macrostatement());
+        if (ctx.setstatement() != null) return visit(ctx.setstatement());
+        if (ctx.extendsstatement() != null) return visit(ctx.extendsstatement());
+        if (ctx.includestatement() != null) return visit(ctx.includestatement());
+        return null;
+    }
 
     @Override
     public Node visitJinjaexpression(JCParser.JinjaexpressionContext ctx) {
@@ -164,15 +146,10 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
         if (!ctx.expression().isEmpty()) {
             node.condition = buildExpr(ctx.expression(0));
         }
-        // Add all element() children to thenBody for minimal correctness.
         for (JCParser.ElementContext ectx : ctx.element()) {
             Node n = visit(ectx);
             if (n != null) node.thenBody.add(n);
         }
-        // Elif/else precise partitioning is possible but requires token scanning;
-        // for now, we fill elifs and elseBody only when grammar makes them explicit.
-        // The grammar had (LBRC_PERCENT J_ELIF expression RBRC_PERCENT element*)*
-        // but partitioning elements between clauses is non-trivial; we keep minimal approach.
         return node;
     }
 
@@ -242,25 +219,13 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
         return inc;
     }
 
-    // Generic visit fallback: aggregate children
-    @Override
-    public Node visitChildren(RuleNode node) {
-        return super.visitChildren(node);
-    }
-
-    // ----------------------
-    // Expression helper
-    // ----------------------
     private Expr buildExpr(JCParser.ExpressionContext ctx) {
         if (ctx == null) return new RawExpr("null");
-
-        // primary simple mapping
         if (ctx.primary() != null) {
             JCParser.PrimaryContext p = ctx.primary();
             if (p.ID() != null) return new VariableExpr(p.ID().getText());
             if (p.STRING() != null) {
                 String s = p.STRING().getText();
-                // remove quotes if present
                 if ((s.startsWith("\"") && s.endsWith("\"")) || (s.startsWith("'") && s.endsWith("'"))) {
                     s = s.substring(1, s.length()-1);
                 }
@@ -271,9 +236,6 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
             if (p.FALSE() != null) return new BoolLiteral(false);
             if (p.NIL() != null) return new NilLiteral();
         }
-
-        // If it's a simple member access or index or call, still return RawExpr for now
-        // Fallback: Raw representation of the full expression text
         return new RawExpr(ctx.getText());
     }
 }
