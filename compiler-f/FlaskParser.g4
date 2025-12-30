@@ -1,17 +1,19 @@
 parser grammar FlaskParser;
 
 options { tokenVocab=FlaskLexer; }
-
-file_input
-    : stmt_list EOF;
-
-stmt_list
-    : (statement | NEWLINE)*;
-
 statement
     : simple_stmt
     | compound_stmt
     ;
+file_input
+    : (statement | NEWLINE)* EOF
+    ;
+
+stmt_list
+    : INDENT (statement | NEWLINE)+ DEDENT
+    ;
+
+
 
 simple_stmt
     : small_stmt (SEMI small_stmt)* SEMI? NEWLINE
@@ -26,7 +28,7 @@ small_stmt
     | global_stmt
     | nonlocal_stmt
     ;
-//////////////////import///////////////////////////
+
 import_stmt
     : IMPORT dotted_as_names
     | FROM dotted_name IMPORT import_as_names
@@ -52,13 +54,12 @@ dotted_name
     : NAME (DOT NAME)*
     ;
 
-//////////////////////////////////////////////////
 expr_stmt
     : testlist_star_expr (EQUAL testlist_star_expr)*
     ;
 
 testlist_star_expr
-    : test (COMMA  NEWLINE* test)* COMMA? NEWLINE?
+    : test (COMMA test)* COMMA?
     ;
 
 test
@@ -77,7 +78,7 @@ not_test
     : NOT not_test
     | comparison
     ;
-//////////////////////////////////////////////////
+
 comparison
     : expr (comp_op expr)*
     ;
@@ -132,7 +133,6 @@ arglist
     : argument (COMMA argument)* COMMA?
     ;
 
-
 argument
     : NAME EQUAL test
     | test
@@ -140,12 +140,11 @@ argument
     | DOUBLESTAR test
     ;
 
-
 atom
-    : LPAR NEWLINE* generator_expression NEWLINE* RPAR
-    | LPAR NEWLINE* testlist_star_expr? NEWLINE* RPAR
-    | LSQB NEWLINE* testlist_star_expr? NEWLINE* RSQB
-    | LBRACE NEWLINE* dictorsetmaker? NEWLINE* RBRACE
+    : LPAR generator_expression RPAR
+    | LPAR testlist_star_expr? RPAR
+    | LSQB testlist_star_expr? RSQB
+    | LBRACE dictorsetmaker? RBRACE
     | list_comp
     | NAME
     | NUMBER
@@ -156,7 +155,7 @@ atom
     ;
 
 list_comp
-    : LSQB test (FOR NAME IN test (IF test)?)? (COMMA NEWLINE* test)* RSQB
+    : LSQB test (FOR NAME IN test (IF test)?)? (COMMA test)* RSQB
     ;
 
 generator_expression
@@ -164,10 +163,9 @@ generator_expression
     ;
 
 dictorsetmaker
-    : dict_entry (COMMA NEWLINE* dict_entry)* COMMA? NEWLINE?
-    | test (COMMA NEWLINE* test)* COMMA? NEWLINE?
+    : dict_entry (COMMA dict_entry)* COMMA?
+    | test (COMMA test)* COMMA?
     ;
-
 
 dict_entry
     : test COLON test
@@ -178,7 +176,6 @@ decorators
     ;
 
 decorator
-
     : AT dotted_name (LPAR arglist? RPAR)? NEWLINE
     ;
 subscriptlist
@@ -213,7 +210,6 @@ nonlocal_stmt
     : NONLOCAL NAME (COMMA NAME)*
     ;
 
-
 compound_stmt
     : if_stmt
     | while_stmt
@@ -240,13 +236,12 @@ funcdef
     : decorators? DEF NAME LPAR parameters? RPAR (RARROW test)? COLON stmt_list
     ;
 
-
 parameters
-    : (typedargslist)?
+    : typedargslist?
     ;
 
 typedargslist
-    : tfpdef (COMMA tfpdef (EQUAL test)?)*
+    : tfpdef (EQUAL test)? (COMMA tfpdef (EQUAL test)?)*
     ;
 
 tfpdef
@@ -254,7 +249,7 @@ tfpdef
     ;
 
 classdef
-    : CLASS NAME LPAR? (NAME (COMMA NAME)*)? RPAR? COLON stmt_list
+    : CLASS NAME (LPAR (NAME (COMMA NAME)*)? RPAR)? COLON stmt_list
     ;
 
 with_stmt
@@ -263,7 +258,6 @@ with_stmt
 
 with_item
     : test (AS NAME)?
-    | atom_expr (AS NAME)?
     ;
 
 try_stmt
