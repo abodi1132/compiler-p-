@@ -3,6 +3,9 @@ import org.antlr.v4.runtime.tree.*;
 import java.nio.file.*;
 import ast.*;
 import gen.*;
+import semantic.SymbolTable;
+import semantic.Symbol;
+import semantic.SymbolTableVisitor;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -23,5 +26,15 @@ public class Main {
 
         ASTPrinter printer = new ASTPrinter();
         System.out.println(printer.print(prog));
+
+         /*---------------Symbol table----------------*/
+        SymbolTableVisitor stv = new SymbolTableVisitor();
+        SymbolTable table = stv.visit(prog);
+
+        System.out.println("Defined variables:");
+        for (Symbol s : table.getAll()) {
+            System.out.println("- " + s.getName());
+        }
+
     }
 }
