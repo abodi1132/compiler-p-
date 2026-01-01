@@ -121,24 +121,21 @@ public class FlaskLexer extends Lexer {
 	}
 
 
-	    // Queue to store generated INDENT/DEDENT tokens
 	    private Deque<Token> tokenQueue = new ArrayDeque<>();
-	    // Stack to track indentation levels (starts with 0)
 	    private Stack<Integer> indentStack = new Stack<Integer>() {{ push(0); }};
 
 	    @Override
 	    public Token nextToken() {
-	        // 1. Emit manual tokens from queue if we have them
+	//        emit manual tokens from queue if we have them
 	        if (!tokenQueue.isEmpty()) {
 	            return tokenQueue.poll();
 	        }
 
-	        // 2. Get the next real token from the source
+	//        get the next real token from the source
 	        Token next = super.nextToken();
 
-	        // Skip processing for EOF initially
+	//       skip processing for EOF initially
 	        if (next.getType() == EOF) {
-	            // Emit DEDENTS to close all open blocks
 	            while (indentStack.size() > 1) {
 	                indentStack.pop();
 	                tokenQueue.add(createToken(DEDENT, "", next));

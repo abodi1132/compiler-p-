@@ -12,17 +12,16 @@ import java.util.*;
 
     @Override
     public Token nextToken() {
-        emit manual tokens from queue if we have them
+//        emit manual tokens from queue if we have them
         if (!tokenQueue.isEmpty()) {
             return tokenQueue.poll();
         }
 
-        get the next real token from the source
+//        get the next real token from the source
         Token next = super.nextToken();
 
-       skip processing for EOF initially
+//       skip processing for EOF initially
         if (next.getType() == EOF) {
-            // Emit DEDENTS to close all open blocks
             while (indentStack.size() > 1) {
                 indentStack.pop();
                 tokenQueue.add(createToken(DEDENT, "", next));
