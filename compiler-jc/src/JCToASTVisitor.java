@@ -2,6 +2,7 @@ import ast.*;
 import gen.*;
 import org.antlr.v4.runtime.tree.*;
 import java.util.*;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
 
@@ -12,6 +13,7 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
     @Override
     public Node visitDocument(JCParser.DocumentContext ctx) {
         Program prog = new Program();
+        setLine(prog, ctx);
         for (JCParser.ElementContext ectx : ctx.element()) {
             Node n = visit(ectx);
 
@@ -44,6 +46,7 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
     @Override
     public Node visitCssblock(JCParser.CssblockContext ctx) {
         CssBlock block = new CssBlock();
+        setLine(block, ctx);
         JCParser.CsscontentContext contentCtx = ctx.csscontent();
 
         if (contentCtx != null) {
@@ -62,6 +65,7 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
     @Override
     public Node visitCssrules(JCParser.CssrulesContext ctx) {
         CssRule r = new CssRule();
+        setLine(r, ctx);
         if (ctx.selector() != null) {
             r.selector = ctx.selector().getText();
         }
@@ -81,6 +85,7 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
 
 
         HtmlElement el = new HtmlElement();
+        setLine(el, ctx);
         el.tagName = ctx.TAG_N().getText();
 
         if (ctx.SRT1() != null) el.selfClosing = true;
@@ -106,12 +111,15 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
     public Node visitAttributes(JCParser.AttributesContext ctx) {
         String name = ctx.ATTR_N1().getText();
         String value = ctx.ATTR_V1() != null ? ctx.ATTR_V1().getText() : null;
-        return new Attribute(name, value);
+        Attribute attr = new Attribute(name, value);
+        setLine(attr, ctx);
+        return attr;
     }
 
     @Override
     public Node visitCssdeclaration(JCParser.CssdeclarationContext ctx) {
         CssDecl d = new CssDecl();
+        setLine(d, ctx);
         d.property = ctx.CSS_PROP().getText();
         d.value = ctx.CSS_VAL().getText().trim();
         return d;
@@ -137,12 +145,15 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
     @Override
     public Node visitJinjaexpression(JCParser.JinjaexpressionContext ctx) {
         Expr e = buildExpr(ctx.expression());
-        return new JinjaExpression(e);
+        JinjaExpression expr = new JinjaExpression(e);
+        setLine(expr, ctx);
+        return expr;
     }
 
     @Override
     public Node visitIfstatement(JCParser.IfstatementContext ctx) {
         JinjaIf node = new JinjaIf();
+        setLine(node, ctx);
         if (!ctx.expression().isEmpty()) {
             node.condition = buildExpr(ctx.expression(0));
         }
@@ -156,6 +167,7 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
     @Override
     public Node visitForstatement(JCParser.ForstatementContext ctx) {
         JinjaFor node = new JinjaFor();
+        setLine(node, ctx);
         node.varName = ctx.ID().getText();
         node.iterable = buildExpr(ctx.expression());
         for (JCParser.ElementContext ectx : ctx.element()) {
@@ -168,6 +180,7 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
     @Override
     public Node visitBlockstatement(JCParser.BlockstatementContext ctx) {
         JinjaBlock b = new JinjaBlock();
+        setLine(b, ctx);
         b.name = ctx.ID().getText();
         for (JCParser.ElementContext ectx : ctx.element()) {
             Node n = visit(ectx);
@@ -179,6 +192,7 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
     @Override
     public Node visitMacrostatement(JCParser.MacrostatementContext ctx) {
         JinjaMacro m = new JinjaMacro();
+        setLine(m, ctx);
         m.name = ctx.ID().getText();
         if (ctx.parameters() != null) {
             for (JCParser.ParameterContext p : ctx.parameters().parameter()) {
@@ -200,6 +214,7 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
     @Override
     public Node visitSetstatement(JCParser.SetstatementContext ctx) {
         JinjaSet s = new JinjaSet();
+        setLine(s, ctx);
         s.name = ctx.ID().getText();
         s.value = buildExpr(ctx.expression());
         return s;
@@ -208,6 +223,7 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
     @Override
     public Node visitExtendsstatement(JCParser.ExtendsstatementContext ctx) {
         JinjaExtends ex = new JinjaExtends();
+        setLine(ex, ctx);
         ex.target = buildExpr(ctx.expression());
         return ex;
     }
@@ -215,8 +231,16 @@ public class JCToASTVisitor extends JCParserBaseVisitor<Node> {
     @Override
     public Node visitIncludestatement(JCParser.IncludestatementContext ctx) {
         JinjaInclude inc = new JinjaInclude();
+        setLine(inc, ctx);
         inc.target = buildExpr(ctx.expression());
         return inc;
+    }
+
+    private <T extends Node> T setLine(T node, ParserRuleContext ctx) {
+        if (ctx != null && ctx.getStart() != null) {
+            node.lineNumber = ctx.getStart().getLine();
+        }
+        return node;
     }
 
     private Expr buildExpr(JCParser.ExpressionContext ctx) {

@@ -1,4 +1,4 @@
-package src.flaskAst;
+package flaskAst;
 
 public abstract class FlaskExpr extends FlaskNode{
 }

@@ -1,4 +1,4 @@
-package src.flaskAst;
+package flaskAst;
 
 public class FlaskBinaryOpExpr extends FlaskExpr {
     public FlaskExpr left;

@@ -1,4 +1,4 @@
-package src.flaskAst;
+package flaskAst;
 
 public class FlaskCallExpr extends FlaskExpr {
     public FlaskExpr func;

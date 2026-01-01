@@ -1,4 +1,4 @@
-package src.flaskAst;
+package flaskAst;
 
 public class FlaskAttributeExpr extends FlaskExpr {
     public FlaskExpr object;

@@ -1,4 +1,4 @@
-package src.flaskAst;
+package flaskAst;
 
 public class FlaskNameExpr extends FlaskExpr {
     public String name;
