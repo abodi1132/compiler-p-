@@ -1,5 +1,4 @@
-// Generated from C:/compiler/compiler-p-/compiler-jc/JCParser.g4 by ANTLR 4.13.2
-package gen;
+// Generated from c:/compiler/compiler-p-/compiler-jc/JCParser.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -9,9 +8,9 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class JCParser extends Parser {
-	static { RuntimeMetaData.checkVersion("4.13.2", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.13.1", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -153,11 +152,6 @@ public class JCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitDocument(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitDocument(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final DocumentContext document() throws RecognitionException {
@@ -230,11 +224,6 @@ public class JCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitElement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitElement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -368,11 +357,6 @@ public class JCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitHtmlelements(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitHtmlelements(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final HtmlelementsContext htmlelements() throws RecognitionException {
@@ -483,11 +467,6 @@ public class JCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitAttributes(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitAttributes(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final AttributesContext attributes() throws RecognitionException {
@@ -547,11 +526,6 @@ public class JCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitCssblock(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitCssblock(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CssblockContext cssblock() throws RecognitionException {
@@ -608,11 +582,6 @@ public class JCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitCsscontent(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitCsscontent(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -708,11 +677,6 @@ public class JCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitCssrules(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitCssrules(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CssrulesContext cssrules() throws RecognitionException {
@@ -793,11 +757,6 @@ public class JCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitSelector(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitSelector(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final SelectorContext selector() throws RecognitionException {
@@ -848,11 +807,6 @@ public class JCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitCssdeclaration(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitCssdeclaration(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CssdeclarationContext cssdeclaration() throws RecognitionException {
@@ -897,11 +851,6 @@ public class JCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitCsscomment(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitCsscomment(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final CsscommentContext csscomment() throws RecognitionException {
@@ -943,11 +892,6 @@ public class JCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitJinjaexpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitJinjaexpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -995,11 +939,6 @@ public class JCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitJinjastatement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitJinjastatement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final JinjastatementContext jinjastatement() throws RecognitionException {
@@ -1046,11 +985,6 @@ public class JCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitJinjacomment(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitJinjacomment(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1139,11 +1073,6 @@ public class JCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitExpression(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitExpression(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1393,11 +1322,6 @@ public class JCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitPrimary(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitPrimary(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final PrimaryContext primary() throws RecognitionException {
@@ -1453,11 +1377,6 @@ public class JCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitArguments(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitArguments(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1533,11 +1452,6 @@ public class JCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitStatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitStatement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1652,11 +1566,6 @@ public class JCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitIfstatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitIfstatement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1803,11 +1712,6 @@ public class JCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitForstatement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitForstatement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ForstatementContext forstatement() throws RecognitionException {
@@ -1884,11 +1788,6 @@ public class JCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitBlockstatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitBlockstatement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -1967,11 +1866,6 @@ public class JCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitMacrostatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitMacrostatement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2055,11 +1949,6 @@ public class JCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitParameter(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitParameter(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ParameterContext parameter() throws RecognitionException {
@@ -2119,11 +2008,6 @@ public class JCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitParameters(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitParameters(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 
@@ -2185,11 +2069,6 @@ public class JCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitSetstatement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitSetstatement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final SetstatementContext setstatement() throws RecognitionException {
@@ -2237,11 +2116,6 @@ public class JCParser extends Parser {
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitExtendsstatement(this);
 		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitExtendsstatement(this);
-			else return visitor.visitChildren(this);
-		}
 	}
 
 	public final ExtendsstatementContext extendsstatement() throws RecognitionException {
@@ -2284,11 +2158,6 @@ public class JCParser extends Parser {
 		@Override
 		public void exitRule(ParseTreeListener listener) {
 			if ( listener instanceof JCParserListener ) ((JCParserListener)listener).exitIncludestatement(this);
-		}
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof JCParserVisitor ) return ((JCParserVisitor<? extends T>)visitor).visitIncludestatement(this);
-			else return visitor.visitChildren(this);
 		}
 	}
 

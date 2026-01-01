@@ -23,7 +23,6 @@ public class SymbolTableVisitor {
             for (Node child : ((JinjaIf) node).thenBody) visit(child);
             for (Node child : ((JinjaIf) node).elseBody) visit(child);
             for (JinjaIf.ElifPart e : ((JinjaIf) node).elifs) {
-                // إذا أردت التعامل مع شروط elif
                 if (e.condition != null) visitExpr(e.condition);
             }
         } else if (node instanceof JinjaBlock) {
@@ -36,8 +35,7 @@ public class SymbolTableVisitor {
 
     private void visitExpr(Expr expr) {
         if (expr instanceof VariableExpr) {
-            table.define(((VariableExpr) expr).name); // استخدم الحقل مباشرة
+            table.define(((VariableExpr) expr).name);
         }
-        // يمكن إضافة أنواع أخرى من التعبيرات إذا لزم
     }
 }

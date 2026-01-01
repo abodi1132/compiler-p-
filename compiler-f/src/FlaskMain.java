@@ -3,6 +3,9 @@ import java.nio.file.*;
 import gen.FlaskLexer;
 import gen.FlaskParser;
 import flaskAst.FlaskProgram;
+import semantic.FlaskSymbol;
+import semantic.FlaskSymbolTable;
+import semantic.FlaskSymbolTableVisitor;
 
 public class FlaskMain {
 
@@ -25,5 +28,13 @@ public class FlaskMain {
 
         FlaskASTPrinter printer = new FlaskASTPrinter();
         printer.print(program);
+
+        /* ---------- Symbol Table (Semantic Analysis) ---------- */
+        FlaskSymbolTableVisitor stv = new FlaskSymbolTableVisitor();
+        FlaskSymbolTable table = stv.visit(program);
+
+        table.print();
+
+
     }
 }

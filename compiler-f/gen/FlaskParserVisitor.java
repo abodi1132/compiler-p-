@@ -1,4 +1,4 @@
-// Generated from C:/compiler-project-test/compiler-p-2/compiler-f/FlaskParser.g4 by ANTLR 4.13.2
+// Generated from C:/compiler/compiler-p-/compiler-f/FlaskParser.g4 by ANTLR 4.13.2
 package gen;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
