@@ -10,7 +10,7 @@ import semantic.FlaskSymbolTableVisitor;
 public class FlaskMain {
 
     public static void main(String[] args) throws Exception {
-        String inputFile = args.length > 0 ? args[0] : "compiler-f/test.py";
+        String inputFile = args.length > 0 ? args[0] : "compiler-f/flask-test/routes/product_details.py";
         String source = Files.readString(Path.of(inputFile));
 
         FlaskLexer lexer = new FlaskLexer(CharStreams.fromString(source));

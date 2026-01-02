@@ -1,32 +1,32 @@
-
 import flaskAst.*;
 import gen.*;
 import org.antlr.v4.runtime.ParserRuleContext;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FlaskToASTVisitor extends FlaskParserBaseVisitor<FlaskNode> {
 
     @Override
     public FlaskNode visitFile_input(FlaskParser.File_inputContext ctx) {
         FlaskProgram p = new FlaskProgram();
-        setLine(p, ctx);
         for (var s : ctx.statement()) {
             FlaskNode node = visit(s);
-            if (node != null) {
-                p.statements.add(node);
-            }
+            if (node != null) p.statements.add(node);
         }
+
+
+        p.statements = universalNormalize(p.statements);
+
         return p;
     }
-
+    private boolean isEmpty(FlaskExpr expr) {
+        return expr == null || expr.toString().trim().isEmpty() || expr.toString().equals("null");
+    }
 
     @Override
     public FlaskNode visitStatement(FlaskParser.StatementContext ctx) {
-        if (ctx.compound_stmt() != null) {
-            return visit(ctx.compound_stmt());
-        }
-        if (ctx.simple_stmt() != null) {
-            return visit(ctx.simple_stmt());
-        }
+        if (ctx.compound_stmt() != null) return visit(ctx.compound_stmt());
+        if (ctx.simple_stmt() != null) return visit(ctx.simple_stmt());
         return null;
     }
 
@@ -40,25 +40,11 @@ public class FlaskToASTVisitor extends FlaskParserBaseVisitor<FlaskNode> {
 
     @Override
     public FlaskNode visitSmall_stmt(FlaskParser.Small_stmtContext ctx) {
-        if (ctx.expr_stmt() != null) {
-            return visit(ctx.expr_stmt());
-        }
-        if (ctx.return_stmt() != null) {
-            return visit(ctx.return_stmt());
-        }
-        if (ctx.import_stmt() != null) {
-            return visit(ctx.import_stmt());
-        }
-        if (ctx.pass_stmt() != null) {
-            return null;
-        }
-        if (ctx.del_stmt() != null) {
-            return null;
-        }
-        if (ctx.global_stmt() != null) {
-            return null;
-        }
-        if (ctx.nonlocal_stmt() != null) {
+        if (ctx.expr_stmt() != null) return visit(ctx.expr_stmt());
+        if (ctx.return_stmt() != null) return visit(ctx.return_stmt());
+        if (ctx.import_stmt() != null) return visit(ctx.import_stmt());
+        if (ctx.pass_stmt() != null || ctx.del_stmt() != null ||
+                ctx.global_stmt() != null || ctx.nonlocal_stmt() != null) {
             return null;
         }
         return null;
@@ -66,27 +52,13 @@ public class FlaskToASTVisitor extends FlaskParserBaseVisitor<FlaskNode> {
 
     @Override
     public FlaskNode visitCompound_stmt(FlaskParser.Compound_stmtContext ctx) {
-        if (ctx.if_stmt() != null) {
-            return visit(ctx.if_stmt());
-        }
-        if (ctx.funcdef() != null) {
-            return visit(ctx.funcdef());
-        }
-        if (ctx.while_stmt() != null) {
-            return visit(ctx.while_stmt());
-        }
-        if (ctx.for_stmt() != null) {
-            return visit(ctx.for_stmt());
-        }
-        if (ctx.classdef() != null) {
-            return visit(ctx.classdef());
-        }
-        if (ctx.with_stmt() != null) {
-            return visit(ctx.with_stmt());
-        }
-        if (ctx.try_stmt() != null) {
-            return visit(ctx.try_stmt());
-        }
+        if (ctx.if_stmt() != null) return visit(ctx.if_stmt());
+        if (ctx.funcdef() != null) return visit(ctx.funcdef());
+        if (ctx.while_stmt() != null) return visit(ctx.while_stmt());
+        if (ctx.for_stmt() != null) return visit(ctx.for_stmt());
+        if (ctx.classdef() != null) return visit(ctx.classdef());
+        if (ctx.with_stmt() != null) return visit(ctx.with_stmt());
+        if (ctx.try_stmt() != null) return visit(ctx.try_stmt());
         return null;
     }
 
@@ -105,6 +77,7 @@ public class FlaskToASTVisitor extends FlaskParserBaseVisitor<FlaskNode> {
         }
         return null;
     }
+
     @Override
     public FlaskNode visitExpr_stmt(FlaskParser.Expr_stmtContext ctx) {
         if (ctx.testlist_star_expr().size() > 1) {
@@ -120,6 +93,7 @@ public class FlaskToASTVisitor extends FlaskParserBaseVisitor<FlaskNode> {
         e.expr = (FlaskExpr) visit(ctx.testlist_star_expr(0));
         return e;
     }
+
     @Override
     public FlaskNode visitFor_stmt(FlaskParser.For_stmtContext ctx) {
         FlaskForStmt forStmt = new FlaskForStmt();
@@ -164,6 +138,9 @@ public class FlaskToASTVisitor extends FlaskParserBaseVisitor<FlaskNode> {
                 }
             }
         }
+
+        normalizeListAssignments(f.body);
+        normalizeDictAssignments(f.body);
 
         return f;
     }
@@ -210,9 +187,7 @@ public class FlaskToASTVisitor extends FlaskParserBaseVisitor<FlaskNode> {
         if (ctx.test() != null && !ctx.test().isEmpty()) {
             return visit(ctx.test(0));
         }
-        FlaskLiteralExpr expr = new FlaskLiteralExpr();
-        expr.value = ctx.getText();
-        return expr;
+        return createLiteralExpr(ctx.getText());
     }
 
     @Override
@@ -220,9 +195,7 @@ public class FlaskToASTVisitor extends FlaskParserBaseVisitor<FlaskNode> {
         if (ctx.or_test() != null && !ctx.or_test().isEmpty()) {
             return visit(ctx.or_test(0));
         }
-        FlaskLiteralExpr expr = new FlaskLiteralExpr();
-        expr.value = ctx.getText();
-        return expr;
+        return createLiteralExpr(ctx.getText());
     }
 
     @Override
@@ -306,18 +279,14 @@ public class FlaskToASTVisitor extends FlaskParserBaseVisitor<FlaskNode> {
         if (ctx.term().size() == 1) {
             return visit(ctx.term(0));
         }
-
         FlaskBinaryOpExpr binOp = new FlaskBinaryOpExpr();
         binOp.left = (FlaskExpr) visit(ctx.term(0));
-
         if (ctx.PLUS() != null && !ctx.PLUS().isEmpty()) {
             binOp.op = "+";
         } else if (ctx.MINUS() != null && !ctx.MINUS().isEmpty()) {
             binOp.op = "-";
         }
-
         binOp.right = (FlaskExpr) visit(ctx.term(1));
-
         return binOp;
     }
 
@@ -348,11 +317,9 @@ public class FlaskToASTVisitor extends FlaskParserBaseVisitor<FlaskNode> {
     @Override
     public FlaskNode visitAtom_expr(FlaskParser.Atom_exprContext ctx) {
         FlaskExpr current = (FlaskExpr) visit(ctx.atom());
-
         for (var trailer : ctx.trailer()) {
             current = processTrailer(current, trailer);
         }
-
         return current;
     }
 
@@ -364,7 +331,9 @@ public class FlaskToASTVisitor extends FlaskParserBaseVisitor<FlaskNode> {
     }
 
     private FlaskLiteralExpr createLiteralExpr(String text) {
-        FlaskLiteralExpr expr = new FlaskLiteralExpr();
+        FlaskLiteralExpr expr = new FlaskLiteralExpr() {
+            @Override public String toString() { return value; }
+        };
         expr.value = text;
         return expr;
     }
@@ -381,7 +350,6 @@ public class FlaskToASTVisitor extends FlaskParserBaseVisitor<FlaskNode> {
                     }
                 }
             }
-
             return call;
         }
 
@@ -401,10 +369,154 @@ public class FlaskToASTVisitor extends FlaskParserBaseVisitor<FlaskNode> {
 
         return base;
     }
+
     private <T extends FlaskNode> T setLine(T node, ParserRuleContext ctx) {
-        if (ctx.getStart() != null) {
-            node.lineNumber = ctx.getStart().getLine();
-        }
+        if (ctx.getStart() != null) node.lineNumber = ctx.getStart().getLine();
         return node;
+    }
+
+    private <T extends FlaskNode> void normalizeListAssignments(List<T> body) {
+        for (int i = 0; i < body.size(); i++) {
+            T node = body.get(i);
+            if (node instanceof FlaskAssignStmt assign) {
+                String valText = assign.value.toString().trim();
+
+                if ("[".equals(valText)) {
+                    StringBuilder listBuilder = new StringBuilder("[");
+                    int j = i + 1;
+
+                    while (j < body.size()) {
+                        String currentText = body.get(j).toString().trim();
+
+                        if ("]".equals(currentText)) {
+                            listBuilder.append("]");
+                            j++;
+                            break;
+                        } else if ("{".equals(currentText)) {
+                            listBuilder.append("{");
+                        } else if ("}".equals(currentText)) {
+                            // Clean trailing comma inside dict
+                            if (listBuilder.lastIndexOf(",") == listBuilder.length() - 2) {
+                                listBuilder.setLength(listBuilder.length() - 2);
+                            }
+                            listBuilder.append("}, ");
+                        } else {
+                            listBuilder.append(currentText);
+                            if (j % 2 != i % 2) {
+                                listBuilder.append(": ");
+                            } else {
+                                listBuilder.append(", ");
+                            }
+                        }
+                        j++;
+                    }
+
+                    String result = listBuilder.toString().replace(", }", "}").replace(", ]", "]");
+                    FlaskLiteralExpr literal = new FlaskLiteralExpr();
+                    literal.value = result;
+                    assign.value = literal;
+
+                    if (j > i + 1) {
+                        body.subList(i + 1, j).clear();
+                    }
+                }
+            }
+        }
+    }
+
+    private <T extends FlaskNode> void normalizeDictAssignments(List<T> body) {
+        for (int i = 0; i < body.size(); i++) {
+            if (body.get(i) instanceof FlaskAssignStmt assign &&
+                    assign.value instanceof FlaskLiteralExpr &&
+                    "{".equals(((FlaskLiteralExpr) assign.value).value)) {
+
+                String target = assign.target;
+                StringBuilder dict = new StringBuilder("{");
+
+                int j = i + 1;
+
+                while (j + 1 < body.size()
+                        && body.get(j) instanceof FlaskExprStmt key
+                        && body.get(j + 1) instanceof FlaskExprStmt value) {
+
+                    dict.append(key.expr.toString())
+                            .append(": ")
+                            .append(value.expr.toString())
+                            .append(", ");
+                    j += 2;
+                }
+
+                if (dict.length() > 2 && dict.charAt(dict.length() - 2) == ',') {
+                    dict.setLength(dict.length() - 2);
+                }
+                dict.append("}");
+
+                FlaskLiteralExpr literal = new FlaskLiteralExpr();
+                literal.value = dict.toString();
+                assign.value = literal;
+
+                if (j > i + 1) {
+                    body.subList(i + 1, j).clear();
+                }
+            }
+        }
+    }
+    private <T extends FlaskNode> List<T> universalNormalize(List<T> body) {
+        List<T> newBody = new ArrayList<>();
+        int i = 0;
+
+        while (i < body.size()) {
+            T current = body.get(i);
+
+            if (current instanceof FlaskAssignStmt assign && isEmpty(assign.value)) {
+                StringBuilder collector = new StringBuilder("[");
+                int j = i + 1;
+
+                while (j < body.size() && (body.get(j) instanceof FlaskExprStmt)) {
+                    FlaskExprStmt expr = (FlaskExprStmt) body.get(j);
+                    String txt = expr.expr.toString();
+
+                    if (txt.equals("{")) {
+                        collector.append("{");
+                    } else if (j + 1 < body.size() && body.get(j+1) instanceof FlaskExprStmt) {
+                        String key = txt;
+                        String val = ((FlaskExprStmt)body.get(j+1)).expr.toString();
+                        collector.append(key).append(": ").append(val).append(", ");
+                        j++;
+                    }
+                    j++;
+
+                    if (j < body.size() && body.get(j).toString().equals("{")) {
+                        collector.append("}, ");
+                    }
+                }
+
+                String finalVal = collector.toString().trim();
+                if (finalVal.endsWith(",")) finalVal = finalVal.substring(0, finalVal.length()-1);
+                assign.value = createLiteralExpr(finalVal + "}]");
+                newBody.add((T) assign);
+                i = j;
+            }
+            else if (current instanceof FlaskReturnStmt ret && ret.value != null && ret.value.toString().contains("render_template()")) {
+                StringBuilder callBuilder = new StringBuilder("render_template(");
+                int j = i + 1;
+                while (j < body.size() && !(body.get(j) instanceof FlaskFunctionDef || body.get(j) instanceof FlaskReturnStmt)) {
+                    T next = body.get(j);
+                    if (next instanceof FlaskExprStmt e) callBuilder.append(e.expr.toString()).append(", ");
+                    if (next instanceof FlaskAssignStmt a) callBuilder.append(a.target).append("=").append(a.value.toString()).append(", ");
+                    j++;
+                }
+                String call = callBuilder.toString().trim();
+                if (call.endsWith(",")) call = call.substring(0, call.length()-1);
+                ret.value = createLiteralExpr(call + ")");
+                newBody.add((T) ret);
+                i = j;
+            }
+            else {
+                newBody.add(current);
+                i++;
+            }
+        }
+        return newBody;
     }
 }
