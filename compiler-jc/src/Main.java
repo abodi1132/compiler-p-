@@ -9,7 +9,7 @@ import semantic.SymbolTableVisitor;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        String inputFile = args.length>0 ? args[0] : "compiler-jc/test.jc";
+        String inputFile = args.length>0 ? args[0] : "compiler-jc/template-jc-products.jc";
         String source = Files.readString(Path.of(inputFile));
 
         JCLexer lexer = new JCLexer(CharStreams.fromString(source));

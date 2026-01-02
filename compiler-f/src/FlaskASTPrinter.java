@@ -64,11 +64,6 @@ public class FlaskASTPrinter {
             indent++;
             p("target: " + f.target);
             p("iter: " + f.iter);
-            p("Body[");
-            indent++;
-            f.body.forEach(this::print);
-            indent--;
-            p("]");
             indent--;
             p("]");
         }
