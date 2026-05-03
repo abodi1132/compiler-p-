@@ -1,4 +1,4 @@
-// Generated from C:/compiler-project-test/compiler-p-2/FlaskLexer.g4 by ANTLR 4.13.2
+// Generated from C:/compiler/compiler-p-/FlaskLexer.g4 by ANTLR 4.13.2
 package FlaskGen;
 
 import java.util.*;

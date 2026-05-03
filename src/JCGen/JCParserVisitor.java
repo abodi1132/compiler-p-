@@ -1,4 +1,4 @@
-// Generated from C:/compiler-project-test/compiler-p-2/JCParser.g4 by ANTLR 4.13.2
+// Generated from C:/compiler/compiler-p-/JCParser.g4 by ANTLR 4.13.2
 package JCGen;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -64,6 +64,12 @@ public interface JCParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCssdeclaration(JCParser.CssdeclarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JCParser#property}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProperty(JCParser.PropertyContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link JCParser#csscomment}.
 	 * @param ctx the parse tree

@@ -1,4 +1,4 @@
-// Generated from C:/compiler-project-test/compiler-p-2/JCParser.g4 by ANTLR 4.13.2
+// Generated from C:/compiler/compiler-p-/JCParser.g4 by ANTLR 4.13.2
 package JCGen;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -75,6 +75,13 @@ public class JCParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> implemen
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitCssdeclaration(JCParser.CssdeclarationContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitProperty(JCParser.PropertyContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

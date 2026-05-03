@@ -50,15 +50,44 @@ mode CSS_MODE;
 
 mode BLK_MODE;
      R_BRACE3: '}'-> popMode;
-     CSS_PROP: [a-zA-Z_\-][a-zA-Z0-9_\-]* -> pushMode(VAL_MODE);
+     FONT_FAMILY: 'font-family';
+     BACKGROUND_COLOR: 'background-color';
+     MARGIN: 'margin';
+     COLOR: 'color';
+     DISPLAY: 'display';
+     FLEX_WRAP: 'flex-wrap';
+     GAP: 'gap';
+     BORDER_RADIUS: 'border-radius';
+     BORDER: 'border';
+     PADDING: 'padding';
+     WIDTH: 'width';
+     HEIGHT: 'height';
+     OBJECT_FIT: 'object-fit';
+     FONT_WEIGHT: 'font-weight';
+     MARGIN_TOP: 'margin-top';
+     MARGIN_BOTTOM: 'margin-bottom';
+     MARGIN_LEFT: 'margin-left';
+     CURSOR: 'cursor';
+     FLEX_DIRECTION: 'flex-direction';
+     COLON1: ':' -> pushMode(VAL_MODE);
      CSS_COMMENT2: '/*' .*? '*/' -> skip;
      WS_BLOCK: [ \t\r\n]+ -> skip;
 
 mode VAL_MODE;
      SEMICOLON1: ';' -> popMode;
-     COLON1: ':';
-     CSS_VAL: (~[;:{}\r\n\t])+;
-     R_BRACE2: '}'-> popMode,popMode;
+     HEX_COLOR:'#' [0-9a-fA-F]+;
+     PX_VALUE: [0-9]+ 'px';
+     KEYWORD
+         : 'flex'
+         | 'wrap'
+         | 'column'
+         | 'bold'
+         | 'cover'
+         | 'pointer'
+         | 'none'
+         | 'Arial'
+         ;
+     R_BRACE2: '}' -> popMode, popMode;
      WS3: [ \t\r\n]+ -> skip;
 
 mode JINJA_MODE;

@@ -1,4 +1,4 @@
-// Generated from C:/compiler-project-test/compiler-p-2/JCParser.g4 by ANTLR 4.13.2
+// Generated from C:/compiler/compiler-p-/JCParser.g4 by ANTLR 4.13.2
 package JCGen;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -97,6 +97,16 @@ public interface JCParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCssdeclaration(JCParser.CssdeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JCParser#property}.
+	 * @param ctx the parse tree
+	 */
+	void enterProperty(JCParser.PropertyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JCParser#property}.
+	 * @param ctx the parse tree
+	 */
+	void exitProperty(JCParser.PropertyContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link JCParser#csscomment}.
 	 * @param ctx the parse tree

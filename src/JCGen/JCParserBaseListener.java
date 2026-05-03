@@ -1,4 +1,4 @@
-// Generated from C:/compiler-project-test/compiler-p-2/JCParser.g4 by ANTLR 4.13.2
+// Generated from C:/compiler/compiler-p-/JCParser.g4 by ANTLR 4.13.2
 package JCGen;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -120,6 +120,18 @@ public class JCParserBaseListener implements JCParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitCssdeclaration(JCParser.CssdeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterProperty(JCParser.PropertyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitProperty(JCParser.PropertyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

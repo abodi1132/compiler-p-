@@ -35,6 +35,7 @@ cssblock
     : STYLE_OP csscontent STYLE_CL
     ;
 csscontent: (cssrules|csscomment|WS2)+;
+
 cssrules
     : selector L_BRACE1 (cssdeclaration | csscomment | WS2)* R_BRACE3
     ;
@@ -48,10 +49,36 @@ selector
 
 
 cssdeclaration
-    : CSS_PROP COLON1 CSS_VAL SEMICOLON1
+    : property  COLON1 values SEMICOLON1
     ;
 
+property
+    : FONT_FAMILY
+    | BACKGROUND_COLOR
+    | MARGIN
+    | COLOR
+    | DISPLAY
+    | FLEX_WRAP
+    | GAP
+    | BORDER
+    | BORDER_RADIUS
+    | PADDING
+    | WIDTH
+    | HEIGHT
+    | OBJECT_FIT
+    | FONT_WEIGHT
+    | MARGIN_TOP
+    | MARGIN_BOTTOM
+    | MARGIN_LEFT
+    | CURSOR
+    | FLEX_DIRECTION
+    ;
 
+values
+    : HEX_COLOR
+    | PX_VALUE
+    | KEYWORD
+    ;
 csscomment: CSS_COMMENT;
 
 jinjaexpression
