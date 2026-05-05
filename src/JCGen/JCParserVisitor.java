@@ -65,11 +65,11 @@ public interface JCParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCssdeclaration(JCParser.CssdeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JCParser#property}.
+	 * Visit a parse tree produced by {@link JCParser#rule}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitProperty(JCParser.PropertyContext ctx);
+	T visitRule(JCParser.RuleContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link JCParser#csscomment}.
 	 * @param ctx the parse tree

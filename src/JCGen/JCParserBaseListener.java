@@ -125,13 +125,13 @@ public class JCParserBaseListener implements JCParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterProperty(JCParser.PropertyContext ctx) { }
+	@Override public void enterRule(JCParser.RuleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitProperty(JCParser.PropertyContext ctx) { }
+	@Override public void exitRule(JCParser.RuleContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

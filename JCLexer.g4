@@ -77,16 +77,14 @@ mode VAL_MODE;
      SEMICOLON1: ';' -> popMode;
      HEX_COLOR:'#' [0-9a-fA-F]+;
      PX_VALUE: [0-9]+ 'px';
-     KEYWORD
-         : 'flex'
-         | 'wrap'
-         | 'column'
-         | 'bold'
-         | 'cover'
-         | 'pointer'
-         | 'none'
-         | 'Arial'
-         ;
+     FLEX:'flex';
+     WRAP:'wrap';
+     COLUMN:'column';
+     BOLD:'bold';
+     COVER:'cover';
+     POINTER:'pointer';
+     NONE:'none';
+     ARIAL:'Arial';
      R_BRACE2: '}' -> popMode, popMode;
      WS3: [ \t\r\n]+ -> skip;
 

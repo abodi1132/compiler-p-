@@ -98,15 +98,15 @@ public interface JCParserListener extends ParseTreeListener {
 	 */
 	void exitCssdeclaration(JCParser.CssdeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JCParser#property}.
+	 * Enter a parse tree produced by {@link JCParser#rule}.
 	 * @param ctx the parse tree
 	 */
-	void enterProperty(JCParser.PropertyContext ctx);
+	void enterRule(JCParser.RuleContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link JCParser#property}.
+	 * Exit a parse tree produced by {@link JCParser#rule}.
 	 * @param ctx the parse tree
 	 */
-	void exitProperty(JCParser.PropertyContext ctx);
+	void exitRule(JCParser.RuleContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link JCParser#csscomment}.
 	 * @param ctx the parse tree
