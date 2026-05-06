@@ -1,16 +1,22 @@
 package JCAST;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class JinjaIf extends Node {
-    public Expr condition;
-    public final List<Node> thenBody = new ArrayList<>();
-    public final List<ElifPart> elifs = new ArrayList<>();
-    public final List<Node> elseBody = new ArrayList<>();
 
+    public Expr condition;
+
+    public List<Node> thenBody = new ArrayList<>();
+
+    public List<ElifPart> elifParts = new ArrayList<>();
+
+    public List<Node> elseBody = new ArrayList<>();
+
+    // Inner class
     public static class ElifPart {
         public Expr condition;
-        public final List<Node> body = new ArrayList<>();
+
+        public List<Node> body = new ArrayList<>();
     }
-    @Override
-    public String toString(){ return "JinjaIf"; }
 }
