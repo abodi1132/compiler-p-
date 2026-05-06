@@ -1,10 +1,8 @@
 parser grammar FlaskParser;
 
 options { tokenVocab=FlaskLexer; }
-statement
-    : simple_stmt
-    | compound_stmt
-    ;
+
+
 file_input
     : (statement | NEWLINE)* EOF
     ;
@@ -13,6 +11,10 @@ stmt_list
     : INDENT (statement | NEWLINE)+ DEDENT
     ;
 
+statement
+    : simple_stmt   # StmtSimple
+    | compound_stmt # StmtCompound
+    ;
 
 
 simple_stmt
@@ -20,18 +22,18 @@ simple_stmt
     ;
 
 small_stmt
-    : import_stmt
-    | expr_stmt
-    | return_stmt
-    | pass_stmt
-    | del_stmt
-    | global_stmt
-    | nonlocal_stmt
+    : import_stmt   # SmallImport
+    | expr_stmt     # SmallExpr
+    | return_stmt   # SmallReturn
+    | pass_stmt     # SmallPass
+    | del_stmt      # SmallDel
+    | global_stmt   # SmallGlobal
+    | nonlocal_stmt # SmallNonlocal
     ;
 
 import_stmt
-    : IMPORT dotted_as_names
-    | FROM dotted_name IMPORT import_as_names
+    : IMPORT dotted_as_names                        # ImportRegular
+    | FROM dotted_name IMPORT import_as_names       # ImportFrom
     ;
 
 import_as_names
@@ -55,7 +57,8 @@ dotted_name
     ;
 
 expr_stmt
-    : testlist_star_expr (EQUAL testlist_star_expr)*
+    : target=testlist_star_expr (EQUAL value=testlist_star_expr)+ # ExprAssign
+    | testlist_star_expr                                           # ExprPlain
     ;
 
 testlist_star_expr
@@ -63,7 +66,8 @@ testlist_star_expr
     ;
 
 test
-    : or_test (IF or_test ELSE test)?
+    : body=or_test IF cond=or_test ELSE alt=test  # TestTernary
+    | or_test                                      # TestSimple
     ;
 
 or_test
@@ -75,8 +79,8 @@ and_test
     ;
 
 not_test
-    : NOT not_test
-    | comparison
+    : NOT not_test    # NotTestNot
+    | comparison      # NotTestComp
     ;
 
 comparison
@@ -84,7 +88,16 @@ comparison
     ;
 
 comp_op
-    : LESS | GREATER | EQEQUAL | NOTEQUAL | LESSEQUAL | GREATEREQUAL | IN | NOT IN | IS | IS NOT
+    : LESS
+    | GREATER
+    | EQEQUAL
+    | NOTEQUAL
+    | LESSEQUAL
+    | GREATEREQUAL
+    | IN
+    | NOT IN
+    | IS
+    | IS NOT
     ;
 
 expr
@@ -112,7 +125,8 @@ term
     ;
 
 factor
-    : (PLUS | MINUS)? power
+    : op=(PLUS | MINUS) factor  # FactorUnary
+    | power                     # FactorPower
     ;
 
 power
@@ -124,10 +138,10 @@ atom_expr
     ;
 
 trailer
-    : LPAR arglist? RPAR
-    | LSQB test RSQB
-    | LSQB subscriptlist RSQB
-    | DOT NAME
+    : LPAR arglist? RPAR               # TrailerCall
+    | LSQB subscriptlist RPAR          # TrailerSubscriptList
+    | LSQB test RSQB                   # TrailerIndex
+    | DOT NAME                         # TrailerAttr
     ;
 
 arglist
@@ -135,28 +149,28 @@ arglist
     ;
 
 argument
-    : NAME EQUAL test
-    | test
-    | STAR test
-    | DOUBLESTAR test
+    : NAME EQUAL test  # ArgKeyword
+    | test             # ArgPositional
+    | STAR test        # ArgStar
+    | DOUBLESTAR test  # ArgDoubleStar
     ;
 
 atom
-    : LPAR generator_expression RPAR
-    | LPAR testlist_star_expr? RPAR
-    | LSQB testlist_star_expr? RSQB
-    | LBRACE dictorsetmaker? RBRACE
-    | list_comp
-    | NAME
-    | NUMBER
-    | STRING
-    | TRUE
-    | FALSE
-    | NONE
+    : LPAR generator_expression RPAR    # AtomGeneratorExpr
+    | LPAR testlist_star_expr? RPAR     # AtomTuple
+    | LSQB list_comp RSQB              # AtomListComp
+    | LSQB testlist_star_expr? RSQB    # AtomList
+    | LBRACE dictorsetmaker? RBRACE     # AtomDict
+    | NAME                              # AtomName
+    | NUMBER                            # AtomNumber
+    | STRING                            # AtomString
+    | TRUE                              # AtomTrue
+    | FALSE                             # AtomFalse
+    | NONE                              # AtomNone
     ;
 
 list_comp
-    : LSQB test (FOR NAME IN test (IF test)?)? (COMMA test)* RSQB
+    : test (FOR NAME IN test (IF test)?)? (COMMA test)*
     ;
 
 generator_expression
@@ -172,20 +186,6 @@ dict_entry
     : test COLON test
     ;
 
-decorators
-    : decorator+
-    ;
-
-decorator
-    : AT dotted_name (LPAR arglist? RPAR)? NEWLINE
-    ;
-subscriptlist
-    : subscript (COMMA subscript)* COMMA?
-    ;
-
-subscript
-    : test (COLON test?)?
-    ;
 
 return_stmt
     : RETURN testlist_star_expr?
@@ -211,18 +211,28 @@ nonlocal_stmt
     : NONLOCAL NAME (COMMA NAME)*
     ;
 
+subscriptlist
+    : subscript (COMMA subscript)* COMMA?
+    ;
+
+subscript
+    : test (COLON test?)?
+    ;
+
 compound_stmt
-    : if_stmt
-    | while_stmt
-    | for_stmt
-    | funcdef
-    | classdef
-    | with_stmt
-    | try_stmt
+    : if_stmt    # CompoundIf
+    | while_stmt # CompoundWhile
+    | for_stmt   # CompoundFor
+    | funcdef    # CompoundFuncdef
+    | classdef   # CompoundClass
+    | with_stmt  # CompoundWith
+    | try_stmt   # CompoundTry
     ;
 
 if_stmt
-    : IF test COLON stmt_list (ELIF test COLON stmt_list)* (ELSE COLON stmt_list)?
+    : IF test COLON stmt_list
+      (ELIF test COLON stmt_list)*
+      (ELSE COLON stmt_list)?
     ;
 
 while_stmt
@@ -230,11 +240,23 @@ while_stmt
     ;
 
 for_stmt
-    : FOR exprlist IN testlist_star_expr COLON stmt_list
+    : FOR targets=loop_vars IN iters=testlist_star_expr COLON body=stmt_list
+    ;
+
+loop_vars
+    : NAME (COMMA NAME)* COMMA?
     ;
 
 funcdef
     : decorators? DEF NAME LPAR parameters? RPAR (RARROW test)? COLON stmt_list
+    ;
+
+decorators
+    : decorator+
+    ;
+
+decorator
+    : AT dotted_name (LPAR arglist? RPAR)? NEWLINE
     ;
 
 parameters
