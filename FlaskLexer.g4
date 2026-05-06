@@ -10,18 +10,34 @@ import java.util.*;
     private Deque<Token> tokenQueue = new ArrayDeque<>();
     private Stack<Integer> indentStack = new Stack<Integer>() {{ push(0); }};
 
+    private int parenDepth   = 0;
+    private int bracketDepth = 0;
+    private int braceDepth   = 0;
+
+    private boolean insideBrackets() {
+        return parenDepth > 0 || bracketDepth > 0 || braceDepth > 0;
+    }
+
     @Override
     public Token nextToken() {
-//        emit manual tokens from queue if we have them
+        // Drain any manually queued tokens first
         if (!tokenQueue.isEmpty()) {
             return tokenQueue.poll();
         }
 
-//        get the next real token from the source
         Token next = super.nextToken();
 
-//       skip processing for EOF initially
-        if (next.getType() == EOF) {
+        // Track bracket depth on REAL tokens so we know when we're inside ( ) [ ] { }
+        int t = next.getType();
+        if      (t == LPAR)   parenDepth++;
+        else if (t == RPAR)   parenDepth   = Math.max(0, parenDepth   - 1);
+        else if (t == LSQB)   bracketDepth++;
+        else if (t == RSQB)   bracketDepth = Math.max(0, bracketDepth - 1);
+        else if (t == LBRACE) braceDepth++;
+        else if (t == RBRACE) braceDepth   = Math.max(0, braceDepth   - 1);
+
+        // EOF: flush any remaining DEDENT tokens
+        if (t == EOF) {
             while (indentStack.size() > 1) {
                 indentStack.pop();
                 tokenQueue.add(createToken(DEDENT, "", next));
@@ -30,13 +46,18 @@ import java.util.*;
             return tokenQueue.poll();
         }
 
-        if (next.getType() == NEWLINE) {
-            String text = next.getText();
-            // Calculate indentation by counting spaces/tabs after the last newline character
-            int lastNl = text.lastIndexOf('\n');
-            if (lastNl == -1) {
-                lastNl = text.lastIndexOf('\r');
+        if (t == NEWLINE) {
+            // Inside brackets: Python's implicit line continuation — swallow the NEWLINE
+            // entirely so INDENT/DEDENT logic is never triggered.
+            if (insideBrackets()) {
+                // Return the next real token instead (recursive call drains queue first)
+                return nextToken();
             }
+
+            String text = next.getText();
+            int lastNl = text.lastIndexOf('\n');
+            if (lastNl == -1) lastNl = text.lastIndexOf('\r');
+
             int currentIndent = 0;
             if (lastNl >= 0 && lastNl < text.length() - 1) {
                 currentIndent = text.length() - lastNl - 1;
@@ -45,14 +66,12 @@ import java.util.*;
             int lastIndent = indentStack.peek();
 
             if (currentIndent > lastIndent) {
-                // Indent: Push new level and emit INDENT
                 indentStack.push(currentIndent);
-                tokenQueue.add(next); // Add the NEWLINE first
+                tokenQueue.add(next);
                 tokenQueue.add(createToken(INDENT, "", next));
                 return tokenQueue.poll();
             } else if (currentIndent < lastIndent) {
-                // Dedent: Pop levels until we match and emit DEDENT for each
-                tokenQueue.add(next); // Add the NEWLINE first
+                tokenQueue.add(next);
                 while (indentStack.size() > 1 && currentIndent < indentStack.peek()) {
                     indentStack.pop();
                     tokenQueue.add(createToken(DEDENT, "", next));
