@@ -107,9 +107,9 @@ public class ASTPrinter {
         for (Node c : n.thenBody){ ind(); printNode(c); nl(); }
         indent--; ind(); write("]"); nl();
 
-        if (!n.elifs.isEmpty()) {
+        if (!n.elifParts.isEmpty()) {
             ind(); write("elifs ["); nl(); indent++;
-            for (JinjaIf.ElifPart e : n.elifs) {
+            for (JinjaIf.ElifPart e : n.elifParts) {
                 ind(); write("Elif { condition=" +
                         escape(e.condition==null?"":e.condition.toString()) + " }"); nl();
             }

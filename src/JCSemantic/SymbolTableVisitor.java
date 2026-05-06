@@ -18,11 +18,22 @@ public class SymbolTableVisitor {
             if (((JinjaFor) node).iterable != null) visitExpr(((JinjaFor) node).iterable);
             for (Node child : ((JinjaFor) node).body) visit(child);
         } else if (node instanceof JinjaIf) {
-            for (Node child : ((JinjaIf) node).thenBody) visit(child);
-            for (Node child : ((JinjaIf) node).elseBody) visit(child);
-            for (JinjaIf.ElifPart e : ((JinjaIf) node).elifs) {
+            JinjaIf ifNode = (JinjaIf) node;
+
+            // main condition
+            if (ifNode.condition != null) visitExpr(ifNode.condition);
+
+            // then
+            for (Node child : ifNode.thenBody) visit(child);
+
+            // elifs
+            for (JinjaIf.ElifPart e : ifNode.elifParts) {
                 if (e.condition != null) visitExpr(e.condition);
+                for (Node child : e.body) visit(child);
             }
+
+            // else
+            for (Node child : ifNode.elseBody) visit(child);
         } else if (node instanceof JinjaBlock) {
             for (Node child : ((JinjaBlock) node).body) visit(child);
         } else if (node instanceof JinjaMacro) {
